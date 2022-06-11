@@ -68,7 +68,7 @@ void Router::run() {
            sockets[receiver_send_fd]->send(sockets[sender_receive_fd]->receive());
            cout<<"sender sent a message :("<<endl;
         }
-        if (FD_ISSET(sender_receive_fd, &read_set))
+        if (FD_ISSET(receiver_receive_fd, &read_set))
         {
            //recv(receive_fd, buffer, 1024, 0);
            //cout<<buffer<<endl;
