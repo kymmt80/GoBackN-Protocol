@@ -1,14 +1,4 @@
 #include "sender.hpp"
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <arpa/inet.h>
-#include <sys/time.h>
 
 using namespace std;
 
@@ -51,8 +41,6 @@ void Sender::run() {
         bytes=select(max_sd + 1, &read_set, NULL, NULL, NULL);
         if (FD_ISSET(receive_fd, &read_set))
         {
-           //recv(receive_fd, buffer, 1024, 0);
-           //cout<<buffer<<endl;
            cout<<sockets[receive_fd]->receive()<<endl;
         }
         if(FD_ISSET(STDIN_FILENO, &read_set)){

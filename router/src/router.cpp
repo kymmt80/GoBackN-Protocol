@@ -1,14 +1,4 @@
 #include "router.hpp"
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <arpa/inet.h>
-#include <sys/time.h>
 
 using namespace std;
 
@@ -63,15 +53,11 @@ void Router::run() {
         bytes=select(max_sd + 1, &read_set, NULL, NULL, NULL);
         if (FD_ISSET(sender_receive_fd, &read_set))
         {
-           //recv(receive_fd, buffer, 1024, 0);
-           //cout<<buffer<<endl;
            sockets[receiver_send_fd]->send(sockets[sender_receive_fd]->receive());
            cout<<"sender sent a message :("<<endl;
         }
         if (FD_ISSET(receiver_receive_fd, &read_set))
         {
-           //recv(receive_fd, buffer, 1024, 0);
-           //cout<<buffer<<endl;
            sockets[sender_send_fd]->send(sockets[receiver_receive_fd]->receive());
            cout<<"receiver sent a message :("<<endl;
         }

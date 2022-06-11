@@ -1,35 +1,8 @@
 #include "receiver.hpp"
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <arpa/inet.h>
-#include <sys/time.h>
 
 using namespace std;
 
-int create_socket(char* ip, int port){
-    int fd;
-    struct sockaddr_in address;
-    int broadcast = 1, opt = 1;
-    fd = socket(AF_INET, SOCK_DGRAM, 0);
-    setsockopt(fd, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
-    setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt));
-
-    address.sin_family = AF_INET;
-    address.sin_port = htons(port);
-    address.sin_addr.s_addr = inet_addr(ip);
-    if (bind(fd, (struct sockaddr *)&address, sizeof(address)) < 0)
-    {
-        write(STDOUT_FILENO,"Connection Error\n",29);
-    }
-    write(STDOUT_FILENO,"Connected to Port\n",19);
-    return fd;
-}
 
 Receiver::Receiver(
             char* ip,
@@ -71,8 +44,6 @@ void Receiver::run() {
         bytes=select(max_sd + 1, &read_set, NULL, NULL, NULL);
         if (FD_ISSET(receive_fd, &read_set))
         {
-           //recv(receive_fd, buffer, 1024, 0);
-           //cout<<buffer<<endl;
            cout<<sockets[receive_fd]->receive()<<endl;
         }
         if(FD_ISSET(STDIN_FILENO, &read_set)){
