@@ -11,12 +11,12 @@ void Message::store_file(){
     //TBC
 }
 
-string Message::get_frame(int frame_id){
-    return content[frame_id];
+frame Message::get_frame(int seq_num){
+    return content[seq_num];
 }
 
-void Message::store_frame(int frame_id,string frame){
-    content[frame_id]=frame;
+void Message::store_frame(int seq_num , frame input){
+    content[seq_num]=input;
 }
 
 int Message::get_size(){

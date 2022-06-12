@@ -4,14 +4,16 @@
 #include<vector>
 #include<string>
 
+typedef std::string frame;
+
 class Message
 {
 private:
-    std::vector<std::string> content;
+    std::vector<frame> content;
 public:
     Message();
-    std::string get_frame(int frame_id);
-    void store_frame(int frame_id,string frame);
+    frame get_frame(int seq_num);
+    void store_frame(int seq_num , frame input);
     void read_file();
     void store_file();
     int get_size();
