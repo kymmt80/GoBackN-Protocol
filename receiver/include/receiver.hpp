@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "./../../utils/Socket.hpp"
+#include "../../utils/include/socket.hpp"
 
 class Receiver {
     public:
