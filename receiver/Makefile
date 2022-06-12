@@ -12,7 +12,8 @@ EXECUTABLE_FILE = receiver.out
 OBJECTS = \
 	$(BUILD_DIR)/main.o 		\
 	$(BUILD_DIR)/receiver.o 	\
-	$(BUILD_DIR)/socket.o
+	$(BUILD_DIR)/socket.o		\
+	$(BUILD_DIR)/message.o
 
 ReceiverSensitivityList = 			\
 	$(SRC_DIR)/receiver.cpp			\
@@ -23,6 +24,10 @@ ReceiverSensitivityList = 			\
 MainSensitivityList = 		\
 	$(SRC_DIR)/main.cpp 	\
 	$(INCLUDE_DIR)/receiver.hpp
+
+MessageSensitivityList = 				\
+	$(SRC_UTILS_DIR)/message.cpp		\
+	$(INCLUDE_UTILS_DIR)/message.hpp
 
 
 all: $(BUILD_DIR) $(EXECUTABLE_FILE)
@@ -38,6 +43,9 @@ $(BUILD_DIR)/main.o: $(MainSensitivityList)
 
 $(BUILD_DIR)/receiver.o: $(ReceiverSensitivityList)
 	$(CC) $(CFLAGS) $(LINK_FLAGS) -c $(SRC_DIR)/receiver.cpp -o $(BUILD_DIR)/receiver.o
+
+$(BUILD_DIR)/message.o: $(MessageSensitivityList)
+	$(CC) $(CFLAGS) $(LINK_FLAGS) -c $(SRC_UTILS_DIR)/message.cpp -o $(BUILD_DIR)/message.o
 
 $(EXECUTABLE_FILE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(LINK_FLAGS) $(OBJECTS) -o $(EXECUTABLE_FILE)

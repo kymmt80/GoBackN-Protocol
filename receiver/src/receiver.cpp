@@ -44,7 +44,8 @@ void Receiver::run() {
         bytes=select(max_sd + 1, &read_set, NULL, NULL, NULL);
         if (FD_ISSET(receive_fd, &read_set))
         {
-           cout<<sockets[receive_fd]->receive()<<endl;
+            handle_recv_msg(sockets[receive_fd]->receive());            
+            //cout<<sockets[receive_fd]->receive()<<endl;
         }
         if(FD_ISSET(STDIN_FILENO, &read_set)){
             cin>>input;
@@ -54,3 +55,16 @@ void Receiver::run() {
     }
 
 }  
+
+void Receiver::handle_recv_msg(std::string message) {
+    if (message[0] == '$')
+    {
+        this->message.set_size(stoi(message.substr(1, (int)(message.size()) - 1)));
+        cout<<message<<endl;
+        sockets[send_fd]->send("ACK");
+    }else{
+        cout<<message<<endl;
+        sockets[send_fd]->send("ACK 0");
+    }
+
+}
