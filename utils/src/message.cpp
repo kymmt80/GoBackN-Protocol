@@ -1,11 +1,13 @@
 #include "../include/message.hpp"
 
+
+using namespace std;
  
-void read_file(){
+void Message::read_file(){
     content={"this","is","a","dumb","test","and","I","am","bored"};
 }
 
-void store_file(){
+void Message::store_file(){
     //TBC
 }
 
@@ -13,7 +15,7 @@ string Message::get_frame(int frame_id){
     return content[frame_id];
 }
 
-void store_frame(int frame_id,string frame){
+void Message::store_frame(int frame_id,string frame){
     content[frame_id]=frame;
 }
 
