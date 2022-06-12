@@ -2,6 +2,8 @@ CC = g++
 BUILD_DIR = build
 SRC_DIR = src
 INCLUDE_DIR = include
+INCLUDE_UTILS_DIR = ../utils/include
+SRC_UTILS_DIR = ../utils/src
 CFLAGS = -std=c++11 -I$(INCLUDE_DIR)
 LINK_FLAGS = 
 
@@ -9,16 +11,22 @@ EXECUTABLE_FILE = sender.out
 
 OBJECTS = \
 	$(BUILD_DIR)/main.o 	\
-	$(BUILD_DIR)/sender.o 			
+	$(BUILD_DIR)/sender.o 	\
+	$(BUILD_DIR)/socket.o
 
-SenderSensitivityList = 	\
-	$(SRC_DIR)/sender.cpp	\
-	$(INCLUDE_DIR)/sender.hpp 				
+SenderSensitivityList = 			\
+	$(SRC_DIR)/sender.cpp			\
+	$(INCLUDE_DIR)/sender.hpp 		\
+	$(INCLUDE_UTILS_DIR)/socket.hpp	\
+    $(SRC_UTILS_DIR)/socket.cpp
 
 MainSensitivityList = 		\
 	$(SRC_DIR)/main.cpp 	\
 	$(INCLUDE_DIR)/sender.hpp
 
+SocketSensitivityList = 			\
+	$(SRC_UTILS_DIR)/socket.cpp			\
+	$(INCLUDE_UTILS_DIR)/socket.hpp
 
 all: $(BUILD_DIR) $(EXECUTABLE_FILE)
 
@@ -30,6 +38,9 @@ $(BUILD_DIR)/main.o: $(MainSensitivityList)
 
 $(BUILD_DIR)/sender.o: $(SenderSensitivityList)
 	$(CC) $(CFLAGS) $(LINK_FLAGS) -c $(SRC_DIR)/sender.cpp -o $(BUILD_DIR)/sender.o
+
+$(BUILD_DIR)/socket.o: $(SocketSensitivityList)
+	$(CC) $(CFLAGS) $(LINK_FLAGS) -c $(SRC_UTILS_DIR)/socket.cpp -o $(BUILD_DIR)/socket.o
 
 $(EXECUTABLE_FILE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(LINK_FLAGS) $(OBJECTS) -o $(EXECUTABLE_FILE)
