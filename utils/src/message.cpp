@@ -25,3 +25,7 @@ int Message::get_size(){
 int Message::get_frame_size(){
     return 1;
 }
+
+void Message::set_size(int sz) {
+    content = vector<frame> (sz);
+}

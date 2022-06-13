@@ -1,6 +1,10 @@
 #include "sender.hpp"
+#include "../../utils/defs.hpp"
 
 using namespace std;
+
+typedef string frame;
+
 
 Sender::Sender(
             char* ip, 
@@ -17,6 +21,10 @@ Sender::Sender(
     socket=new Socket(ip,port_from_router);
     sockets[socket->fd]=socket;
     receive_fd=socket->fd;
+
+    message.read_file();
+
+    LFS = 0;
 }
 
 void Sender::run() {
@@ -35,6 +43,10 @@ void Sender::run() {
     FD_SET(receive_fd, &master_set);
     FD_SET(send_fd, &master_set);
     write_to = server_fd;
+
+    bool flag=false;
+    bool flag2=false;
+
     while (1)
     {
         read_set = master_set;
@@ -42,12 +54,25 @@ void Sender::run() {
         if (FD_ISSET(receive_fd, &read_set))
         {
            cout<<sockets[receive_fd]->receive()<<endl;
+           if(!flag){
+                sockets[send_fd]->send(get_next_frame());
+                flag=true;
+           }
+           
         }
         if(FD_ISSET(STDIN_FILENO, &read_set)){
-            cin>>input;
-            sockets[send_fd]->send(input);
+            //cin>>input;
+            //sockets[send_fd]->send(input);
+            if(!flag2){
+                sockets[send_fd]->send("$" + to_string(message.get_size()));
+                flag2=true;
+            }
         }
         memset(buffer, 0, 1024);
     }
 
 }  
+
+frame Sender::get_next_frame() {
+    return to_string(LFS) + DELIMETER + message.get_frame(LFS++);
+}

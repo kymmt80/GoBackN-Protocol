@@ -2,7 +2,7 @@
 #define __SENDER_HPP__
 
 #include<vector>
-
+#include "../../utils/include/message.hpp"
 #include "../../utils/include/socket.hpp"
 
 class Sender {
@@ -13,12 +13,15 @@ class Sender {
             int port_to_router
         );
         void run();
+        frame get_next_frame();
     private:
         char* ip;
         int port;
         int send_fd;
         int receive_fd;
         std::vector<Socket*>sockets;
+        Message message;
+        int LFS;
 };
 
 #endif

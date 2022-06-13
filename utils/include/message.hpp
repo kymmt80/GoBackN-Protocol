@@ -11,13 +11,13 @@ class Message
 private:
     std::vector<frame> content;
 public:
-    Message();
     frame get_frame(int seq_num);
-    void store_frame(int seq_num , frame input);
+    void store_frame(int seq_num, frame input);
     void read_file();
     void store_file();
     int get_size();
     int get_frame_size();
+    void set_size(int sz);
 };
 
 
