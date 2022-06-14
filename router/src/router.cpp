@@ -1,4 +1,6 @@
 #include "router.hpp"
+#include "../../utils/defs.hpp"
+
 
 using namespace std;
 
@@ -30,6 +32,7 @@ Router::Router(
 }
 
 void Router::run() {
+    srand((unsigned)time(NULL));
     int fd;
     int server_fd, room_fd=-1, max_sd, write_to;
     char buff[1049] = {0};
@@ -47,19 +50,28 @@ void Router::run() {
     FD_SET(receiver_receive_fd, &master_set);
     FD_SET(receiver_send_fd, &master_set);
     write_to = server_fd;
+    string recieved_message;
     while (1)
     {
         read_set = master_set;
         bytes=select(max_sd + 1, &read_set, NULL, NULL, NULL);
         if (FD_ISSET(sender_receive_fd, &read_set))
         {
-           sockets[receiver_send_fd]->send(sockets[sender_receive_fd]->receive());
-           cout<<"sender sent a message :("<<endl;
+            recieved_message=sockets[sender_receive_fd]->receive();
+
+            float drop = float(rand())/RAND_MAX;
+            if(drop <= DROP_PROB && recieved_message[0]!='$'){
+                cout<<"Oops I dropped packet no."<< recieved_message[0] <<" :)))"<<endl<<LOG_DELIM;
+            }else{
+                sockets[receiver_send_fd]->send(recieved_message);
+                cout<<"Transmitting message \""<< recieved_message <<"\" from sender to receiver..."<<endl<<LOG_DELIM;
+            }
         }
         if (FD_ISSET(receiver_receive_fd, &read_set))
         {
-           sockets[sender_send_fd]->send(sockets[receiver_receive_fd]->receive());
-           cout<<"receiver sent a message :("<<endl;
+            recieved_message=sockets[receiver_receive_fd]->receive();
+            sockets[sender_send_fd]->send(recieved_message);
+            cout<<"Transmitting message \""<< recieved_message <<"\" from receiver to sender..."<<endl<<LOG_DELIM;
         }
         memset(buffer, 0, 1024);
     }

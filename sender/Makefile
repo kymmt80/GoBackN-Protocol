@@ -21,7 +21,8 @@ SenderSensitivityList = 				\
 	$(INCLUDE_UTILS_DIR)/socket.hpp		\
     $(SRC_UTILS_DIR)/socket.cpp			\
 	$(INCLUDE_UTILS_DIR)/message.hpp	\
-	$(SRC_UTILS_DIR)/message.cpp
+	$(SRC_UTILS_DIR)/message.cpp		\
+	../utils/defs.hpp
 
 MainSensitivityList = 					\
 	$(SRC_DIR)/main.cpp 				\
@@ -45,7 +46,7 @@ $(BUILD_DIR):
 $(BUILD_DIR)/main.o: $(MainSensitivityList)
 	$(CC) $(CFLAGS) $(LINK_FLAGS) -c $(SRC_DIR)/main.cpp -o $(BUILD_DIR)/main.o
 
-$(BUILD_DIR)/sender.o: $(SenderSensitivityList)
+$(BUILD_DIR)/sender.o: $(SenderSensitivityList) 
 	$(CC) $(CFLAGS) $(LINK_FLAGS) -c $(SRC_DIR)/sender.cpp -o $(BUILD_DIR)/sender.o
 
 $(BUILD_DIR)/socket.o: $(SocketSensitivityList)

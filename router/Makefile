@@ -18,7 +18,8 @@ RouterSensitivityList = 			\
 	$(SRC_DIR)/router.cpp			\
 	$(INCLUDE_DIR)/router.hpp 		\
 	$(INCLUDE_UTILS_DIR)/socket.hpp	\
-    $(SRC_UTILS_DIR)/socket.cpp
+    $(SRC_UTILS_DIR)/socket.cpp		\
+	../utils/defs.hpp
 
 MainSensitivityList = 		\
 	$(SRC_DIR)/main.cpp 	\

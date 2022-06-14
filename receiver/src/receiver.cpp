@@ -92,12 +92,12 @@ void Receiver::handle_recv_msg(std::string message) {
         int seq_num = get_seq_num(message);
         string data = get_data(message);
         if(seq_num!=LFR){
-            cout<<"Dropped frame no." <<seq_num << " saying: " << data << endl;
+            cout<<"Discarded frame no." <<seq_num << " saying: " << data << endl<<LOG_DELIM;
         }else{
-            cout << "Received frame no." <<seq_num << " saying: " << data << endl;
+            cout << "Received frame no." <<seq_num << " saying: " << data << endl<<LOG_DELIM;
             this->message.store_frame(seq_num, data);
             sockets[send_fd]->send("ACK" + to_string(LFR));
-            cout<<"Sending ACK"<<LFR<<"..."<<endl;
+            cout<<"Sending ACK"<<LFR<<"..."<<endl<<LOG_DELIM;
             LFR++;
         }
     }

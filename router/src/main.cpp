@@ -3,6 +3,7 @@
 
 int main(int argc, char* argv[]) {
 
+    srand((unsigned)time(NULL));
     char* ip = argv[1];
     int port_to_sender = atoi(argv[2]);
     int port_from_sender = atoi(argv[3]);

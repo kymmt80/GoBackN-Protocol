@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "../include/socket.hpp"
+#include "../defs.hpp"
 
 Socket::Socket(char *ip, int port) {
     int fd;
@@ -16,7 +17,7 @@ Socket::Socket(char *ip, int port) {
     {
         std::cout << "Connection Error" << std::endl;
     }
-    std::cout << "Connected to Port " << port << std::endl;
+    std::cout << "Connected to Port " << port << std::endl<<LOG_DELIM;
     this->fd = fd;
 }
 

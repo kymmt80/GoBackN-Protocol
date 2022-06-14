@@ -34,7 +34,7 @@ void Sender::send_new_frames()
 {
     while (LFS - LAR <= SWS)
     {
-        cout << "Sending frame " << LFS << "..." << endl;
+        cout << "Sending frame " << LFS << "..." << endl<<LOG_DELIM;
         sent_times[LFS] = clock();
         sockets[send_fd]->send(get_next_frame());
     }
@@ -58,7 +58,7 @@ void Sender::retransmit() {
     for (int i = LAR + 1; i < LFS; i++)
     {
         sent_times[i] = clock();
-        cout << "Sending frame " << i << "..." << endl;
+        cout << "Retransmitting frame " << i << "..." << endl<<LOG_DELIM;
         sockets[send_fd]->send(create_frame(i));
     }
 }
@@ -77,11 +77,6 @@ void Sender::run() {
     FD_SET(receive_fd, &master_set);
     while (1)
     {
-        if (time_out())
-        {
-            cout << "TIMEOUT occured for " << LAR + 1 << endl;
-            retransmit();
-        }
 
         read_set = master_set;
         bytes=select(max_sd + 1, &read_set, NULL, NULL, NULL);
@@ -94,7 +89,7 @@ void Sender::run() {
             {
                 int seq_num = get_seq_num(recv_message);
                 LAR = seq_num;
-                cout << recv_message << endl;
+                cout << recv_message << endl<<LOG_DELIM;
                 if(!all_frames_sent()){
                         send_new_frames();
                 }
@@ -103,6 +98,11 @@ void Sender::run() {
         if(FD_ISSET(STDIN_FILENO, &read_set)){
                 sockets[send_fd]->send("$" + to_string(message.get_size()));
                 FD_CLR(STDIN_FILENO,&master_set);
+        }
+        if (time_out())
+        {
+            cout << "TIMEOUT occured for " << LAR + 1 << endl<<LOG_DELIM;
+            retransmit();
         }
     }
 
