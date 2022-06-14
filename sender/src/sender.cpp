@@ -58,9 +58,10 @@ void Sender::retransmit() {
     for (int i = LAR + 1; i < LFS; i++)
     {
         sent_times[i] = clock();
-        cout << "Retransmitting frame " << i << "..." << endl<<LOG_DELIM;
+        cout << "Retransmitting frame " << i << "..." << endl;
         sockets[send_fd]->send(create_frame(i));
     }
+    cout<<LOG_DELIM;
 }
 
 
