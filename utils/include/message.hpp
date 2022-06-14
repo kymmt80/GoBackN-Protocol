@@ -10,6 +10,7 @@ class Message
 {
 private:
     std::vector<frame> content;
+    std::vector<bool> received_frames;
 public:
     frame get_frame(int seq_num);
     void store_frame(int seq_num, frame input);
@@ -18,6 +19,7 @@ public:
     int get_size();
     int get_frame_size();
     void set_size(int sz);
+    bool is_frame_received(int seq_num);
 };
 
 

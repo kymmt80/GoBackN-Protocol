@@ -17,6 +17,7 @@ frame Message::get_frame(int seq_num){
 
 void Message::store_frame(int seq_num , frame input){
     content[seq_num]=input;
+    received_frames[seq_num]=true;
 }
 
 int Message::get_size(){
@@ -28,4 +29,9 @@ int Message::get_frame_size(){
 
 void Message::set_size(int sz) {
     content = vector<frame> (sz);
+    received_frames = vector<bool> (sz,false);
+}
+
+bool Message::is_frame_received(int seq_num){
+    return received_frames[seq_num];
 }
