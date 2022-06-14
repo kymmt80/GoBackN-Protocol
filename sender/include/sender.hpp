@@ -13,9 +13,12 @@ class Sender {
             int port_to_router
         );
         void run();
+        frame create_frame(int seq_num);
         frame get_next_frame();
         bool all_frames_sent();
         void send_new_frames();
+        bool time_out();
+        void retransmit();
     private:
         char* ip;
         int port;
@@ -25,6 +28,7 @@ class Sender {
         Message message;
         int LFS;
         int LAR;
+        std::vector<clock_t> sent_times;
 };
 
 #endif

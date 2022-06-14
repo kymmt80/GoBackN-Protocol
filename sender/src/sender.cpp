@@ -24,6 +24,8 @@ Sender::Sender(
 
     message.read_file();
 
+    sent_times = vector<clock_t> (message.get_size());
+
     LFS = 0;
     LAR = -1;
 }
@@ -33,12 +35,32 @@ void Sender::send_new_frames()
     while (LFS - LAR <= SWS)
     {
         cout << "Sending frame " << LFS << "..." << endl;
+        sent_times[LFS] = clock();
         sockets[send_fd]->send(get_next_frame());
     }
 }
 
 int get_seq_num(string message) {
     return stoi(message.substr(3, message.size() - 3));
+}
+
+
+bool Sender::time_out() {
+    if(LAR + 1 >=message.get_size())
+        return false;
+    clock_t current_time = clock();
+    float time_elapsed = (current_time - sent_times[LAR + 1]) / CLOCKS_PER_SEC;
+    return time_elapsed > PACKET_LOST_THRESHOLD;
+}
+
+
+void Sender::retransmit() {
+    for (int i = LAR + 1; i < LFS; i++)
+    {
+        sent_times[i] = clock();
+        cout << "Sending frame " << i << "..." << endl;
+        sockets[send_fd]->send(create_frame(i));
+    }
 }
 
 
@@ -55,6 +77,12 @@ void Sender::run() {
     FD_SET(receive_fd, &master_set);
     while (1)
     {
+        if (time_out())
+        {
+            cout << "TIMEOUT occured for " << LAR + 1 << endl;
+            retransmit();
+        }
+
         read_set = master_set;
         bytes=select(max_sd + 1, &read_set, NULL, NULL, NULL);
         if (FD_ISSET(receive_fd, &read_set))
@@ -80,10 +108,20 @@ void Sender::run() {
 
 }  
 
+frame Sender::create_frame(int seq_num)
+{
+    return to_string(seq_num) + DELIMETER + message.get_frame(seq_num); 
+}
+
 frame Sender::get_next_frame() {
-    string sent_message=to_string(LFS) + DELIMETER + message.get_frame(LFS);
+
+    string ret = create_frame(LFS);
     LFS++;
-    return sent_message; 
+    return ret;
+
+    // string sent_message=to_string(LFS) + DELIMETER + message.get_frame(LFS);
+    // LFS++;
+    // return sent_message; 
 }
 
 bool Sender::all_frames_sent(){
