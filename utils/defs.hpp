@@ -1,3 +1,4 @@
-#define     SENDER_WINDOW_SIZE      4
-#define     RECEIVER_WINDOW_SIZE    4
+#define     SWS      4
+#define     RWS    4
 #define     DELIMETER               ':'
+#define     FIRST_ACK               "ACK$"

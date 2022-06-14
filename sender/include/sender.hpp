@@ -15,6 +15,7 @@ class Sender {
         void run();
         frame get_next_frame();
         bool all_frames_sent();
+        void send_new_frames();
     private:
         char* ip;
         int port;
@@ -23,6 +24,7 @@ class Sender {
         std::vector<Socket*>sockets;
         Message message;
         int LFS;
+        int LAR;
 };
 
 #endif

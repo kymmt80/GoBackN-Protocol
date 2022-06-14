@@ -25,7 +25,22 @@ Sender::Sender(
     message.read_file();
 
     LFS = 0;
+    LAR = -1;
 }
+
+void Sender::send_new_frames()
+{
+    while (LFS - LAR <= SWS)
+    {
+        cout << "Sending frame " << LFS << "..." << endl;
+        sockets[send_fd]->send(get_next_frame());
+    }
+}
+
+int get_seq_num(string message) {
+    return stoi(message.substr(3, message.size() - 3));
+}
+
 
 void Sender::run() {
     int fd;
@@ -44,27 +59,30 @@ void Sender::run() {
     FD_SET(send_fd, &master_set);
     write_to = server_fd;
 
-    bool flag2=false;
-
+    bool flag = false;
     while (1)
     {
         read_set = master_set;
         bytes=select(max_sd + 1, &read_set, NULL, NULL, NULL);
         if (FD_ISSET(receive_fd, &read_set))
         {
-           cout<<sockets[receive_fd]->receive()<<endl;
-           if(!all_frames_sent()){
-                cout<<"is_sending frame "<<LFS<<endl;
-                sockets[send_fd]->send(get_next_frame());
-           }
-           
+            string recv_message = sockets[receive_fd]->receive(); 
+            if (recv_message == FIRST_ACK)
+                send_new_frames();
+            else 
+            {
+                int seq_num = get_seq_num(recv_message);
+                LAR = seq_num;
+                cout <<  recv_message << endl;
+                if(!all_frames_sent()){
+                        send_new_frames();
+                }
+            }  
         }
         if(FD_ISSET(STDIN_FILENO, &read_set)){
-            //cin>>input;
-            //sockets[send_fd]->send(input);
-            if(!flag2){
+            if(!flag){
                 sockets[send_fd]->send("$" + to_string(message.get_size()));
-                flag2=true;
+                flag = true;
             }
         }
         memset(buffer, 0, 1024);
