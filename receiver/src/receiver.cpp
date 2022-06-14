@@ -56,24 +56,7 @@ void Receiver::run() {
 
 }  
 
-void Receiver::handle_recv_msg(std::string message) {
-    if (message[0] == '$')
-    {
-        this->message.set_size(stoi(message.substr(1, (int)(message.size()) - 1)));
-        cout<<message<<endl;
-        sockets[send_fd]->send("ACK$");
-    }else{
-        cout<<message<<endl;
-        int seq_num = getSeqNum(message);
-        string data = getData(message);
-        cout << seq_num << " " << data << endl;
-        sockets[send_fd]->send("ACK" + to_string(seq_num));
-        this->message.store_frame(seq_num, data);
-    }
-
-}
-
-int getSeqNum(string message) {
+int get_seq_num(string message) {
     string num = "";
     for (int i = 0; i < message.size(); i++)
     {
@@ -81,9 +64,10 @@ int getSeqNum(string message) {
             return stoi(num);
         num += message[i];
     }
+    return 0;
 }
 
-string getData(string message) {
+string get_data(string message) {
     string data = "";
     int i = 0;
     for (i = 0; i < message.size(); i++)
@@ -93,4 +77,21 @@ string getData(string message) {
     for (i; i < message.size(); i++)
         data += message[i];
     return data;
+}
+
+void Receiver::handle_recv_msg(std::string message) {
+    if (message[0] == '$')
+    {
+        this->message.set_size(stoi(message.substr(1, (int)(message.size()) - 1)));
+        cout<<message<<endl;
+        sockets[send_fd]->send("ACK$");
+    }else{
+        cout<<message<<endl;
+        int seq_num = get_seq_num(message);
+        string data = get_data(message);
+        cout << seq_num << " " << data << endl;
+        sockets[send_fd]->send("ACK" + to_string(seq_num));
+        this->message.store_frame(seq_num, data);
+    }
+
 }
