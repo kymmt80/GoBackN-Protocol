@@ -1,5 +1,6 @@
 #include "receiver.hpp"
 #include <iostream>
+#include "defs.hpp"
 
 using namespace std;
 
@@ -60,7 +61,7 @@ int get_seq_num(string message) {
     string num = "";
     for (int i = 0; i < message.size(); i++)
     {
-        if (message[i] == ';')
+        if (message[i] == DELIMETER)
             return stoi(num);
         num += message[i];
     }
@@ -71,7 +72,7 @@ string get_data(string message) {
     string data = "";
     int i = 0;
     for (i = 0; i < message.size(); i++)
-        if (message[i] == ';')
+        if (message[i] == DELIMETER)
             break;
     i++;
     for (i; i < message.size(); i++)
