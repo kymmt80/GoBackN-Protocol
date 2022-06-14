@@ -1,10 +1,22 @@
 #include "../include/message.hpp"
-
+#include "../defs.hpp"
+#include <fstream>
 
 using namespace std;
  
 void Message::read_file(){
+    
     content={"this","is","a","dumb","test","and","I","am","bored"};
+
+    // ifstream fin(FILE_ADDRESS);
+	// char c[CHUNK_SIZE];
+	// while (fin.read(c, CHUNK_SIZE))
+    // {
+    //     string chunk = "";
+    //     for (int i = 0; i < CHUNK_SIZE; i++)
+    //         chunk += c[i];
+    //     content.push_back(chunk);
+    // }
 }
 
 void Message::store_file(){
