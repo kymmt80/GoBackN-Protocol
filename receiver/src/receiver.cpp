@@ -87,10 +87,9 @@ void Receiver::handle_recv_msg(std::string message) {
         cout<<message<<endl;
         sockets[send_fd]->send("ACK$");
     }else{
-        cout<<message<<endl;
         int seq_num = get_seq_num(message);
         string data = get_data(message);
-        cout << seq_num << " " << data << endl;
+        cout << "Received frame no." <<seq_num << " saying: " << data << endl;
         sockets[send_fd]->send("ACK" + to_string(seq_num));
         this->message.store_frame(seq_num, data);
     }

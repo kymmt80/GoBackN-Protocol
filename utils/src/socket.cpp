@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "../include/socket.hpp"
 
 Socket::Socket(char *ip, int port) {
@@ -12,9 +14,9 @@ Socket::Socket(char *ip, int port) {
     address.sin_addr.s_addr = inet_addr(ip);
     if (bind(fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
-        write(STDOUT_FILENO, "Connection Error\n", 29);
+        std::cout << "Connection Error" << std::endl;
     }
-    write(STDOUT_FILENO, "Connected to Port\n", 19);
+    std::cout << "Connected to Port " << port << std::endl;
     this->fd = fd;
 }
 
