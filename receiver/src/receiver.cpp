@@ -61,10 +61,36 @@ void Receiver::handle_recv_msg(std::string message) {
     {
         this->message.set_size(stoi(message.substr(1, (int)(message.size()) - 1)));
         cout<<message<<endl;
-        sockets[send_fd]->send("ACK");
+        sockets[send_fd]->send("ACK$");
     }else{
         cout<<message<<endl;
-        sockets[send_fd]->send("ACK 0");
+        int seq_num = getSeqNum(message);
+        string data = getData(message);
+        cout << seq_num << " " << data << endl;
+        sockets[send_fd]->send("ACK" + to_string(seq_num));
+        this->message.store_frame(seq_num, data);
     }
 
+}
+
+int getSeqNum(string message) {
+    string num = "";
+    for (int i = 0; i < message.size(); i++)
+    {
+        if (message[i] == ';')
+            return stoi(num);
+        num += message[i];
+    }
+}
+
+string getData(string message) {
+    string data = "";
+    int i = 0;
+    for (i = 0; i < message.size(); i++)
+        if (message[i] == ';')
+            break;
+    i++;
+    for (i; i < message.size(); i++)
+        data += message[i];
+    return data;
 }
