@@ -44,7 +44,6 @@ void Sender::run() {
     FD_SET(send_fd, &master_set);
     write_to = server_fd;
 
-    bool flag=false;
     bool flag2=false;
 
     while (1)
@@ -54,9 +53,9 @@ void Sender::run() {
         if (FD_ISSET(receive_fd, &read_set))
         {
            cout<<sockets[receive_fd]->receive()<<endl;
-           if(!flag){
+           if(!all_frames_sent()){
+                cout<<"is_sending frame "<<LFS<<endl;
                 sockets[send_fd]->send(get_next_frame());
-                flag=true;
            }
            
         }
@@ -74,5 +73,11 @@ void Sender::run() {
 }  
 
 frame Sender::get_next_frame() {
-    return to_string(LFS) + DELIMETER + message.get_frame(LFS++);
+    string sent_message=to_string(LFS) + DELIMETER + message.get_frame(LFS);
+    LFS++;
+    return sent_message; 
+}
+
+bool Sender::all_frames_sent(){
+    return LFS>message.get_size()-1;
 }

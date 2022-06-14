@@ -14,6 +14,7 @@ class Sender {
         );
         void run();
         frame get_next_frame();
+        bool all_frames_sent();
     private:
         char* ip;
         int port;
