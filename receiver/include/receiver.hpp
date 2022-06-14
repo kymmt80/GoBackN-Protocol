@@ -23,7 +23,7 @@ class Receiver {
         int send_fd;
         int receive_fd;
         int LFR;
-        int LAF;
+        //int LAF;
         std::vector<Socket*>sockets;
         Message message;
 };

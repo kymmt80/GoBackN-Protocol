@@ -23,7 +23,6 @@ Receiver::Receiver(
     receive_fd=socket->fd;
 
     LFR=0;
-    LAF=RWS;
 }
 
 void Receiver::run() {
@@ -92,18 +91,14 @@ void Receiver::handle_recv_msg(std::string message) {
     }else{
         int seq_num = get_seq_num(message);
         string data = get_data(message);
-        if(seq_num>=LAF||seq_num<LFR){
+        if(seq_num!=LFR){
             cout<<"Dropped frame no." <<seq_num << " saying: " << data << endl;
         }else{
             cout << "Received frame no." <<seq_num << " saying: " << data << endl;
             this->message.store_frame(seq_num, data);
-            if(seq_num==LFR){
-                while(this->message.is_frame_received(++LFR));
-                //LFR-=1;
-                sockets[send_fd]->send("ACK" + to_string(LFR-1));
-                LAF=LFR+RWS;
-                cout<<"Sending ACK for frame no."<<LFR-1<<"..."<<endl;
-            }
+            sockets[send_fd]->send("ACK" + to_string(LFR));
+            cout<<"Sending ACK"<<LFR<<"..."<<endl;
+            LFR++;
         }
     }
 
