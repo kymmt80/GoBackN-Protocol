@@ -66,11 +66,9 @@ void Sender::retransmit() {
 
 
 void Sender::run() {
-    int fd;
     int max_sd;
-    string input;
-    int id,bytes,room_type;
-    fd_set master_set, read_set, write_set;
+    int bytes;
+    fd_set master_set, read_set;
     FD_ZERO(&master_set);
     max_sd = max(receive_fd,send_fd);
     FD_SET(STDIN_FILENO, &master_set);

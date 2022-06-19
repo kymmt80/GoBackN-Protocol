@@ -33,15 +33,9 @@ Router::Router(
 
 void Router::run() {
     srand((unsigned)time(NULL));
-    int fd;
-    int server_fd, room_fd=-1, max_sd, write_to;
-    char buff[1049] = {0};
-    char buffer[1024] = {0};
-    char QandA[1024]={0};
-    char tmp[1049]={0};
-    string input;
-    int id,bytes,room_type;
-    fd_set master_set, read_set, write_set;
+    int max_sd;
+    int bytes;
+    fd_set master_set, read_set;
     FD_ZERO(&master_set);
     max_sd = receiver_receive_fd;
     FD_SET(STDIN_FILENO, &master_set);
@@ -49,7 +43,6 @@ void Router::run() {
     FD_SET(sender_send_fd, &master_set);
     FD_SET(receiver_receive_fd, &master_set);
     FD_SET(receiver_send_fd, &master_set);
-    write_to = server_fd;
     string recieved_message;
     while (1)
     {
@@ -73,7 +66,6 @@ void Router::run() {
             sockets[sender_send_fd]->send(recieved_message);
             cout<<"Transmitting message \""<< recieved_message <<"\" from receiver to sender..."<<endl<<LOG_DELIM;
         }
-        memset(buffer, 0, 1024);
     }
 
 }  
