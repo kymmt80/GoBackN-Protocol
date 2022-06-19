@@ -105,6 +105,10 @@ void Sender::run() {
             cout << "TIMEOUT occured for " << LAR + 1 << endl<<LOG_DELIM;
             retransmit();
         }
+        if(LAR==message.get_size()-1){
+            cout<<"TRANSMIT IS OVER"<<endl<<LOG_DELIM;
+            break;
+        }
     }
 
 }  
