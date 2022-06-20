@@ -56,8 +56,9 @@ void Router::run() {
             if(drop <= DROP_PROB && recieved_message[0]!='$'){
                 cout<<"Oops I dropped packet no."<< recieved_message[0] <<" :)))"<<endl<<LOG_DELIM;
             }else{
-                sockets[receiver_send_fd]->send(recieved_message);
-                cout<<"Transmitting message \""<< recieved_message <<"\" from sender to receiver..."<<endl<<LOG_DELIM;
+                //sockets[receiver_send_fd]->send(recieved_message);
+                //cout<<"Transmitting message \""<< recieved_message <<"\" from sender to receiver..."<<endl<<LOG_DELIM;   //uncomment this section for without-buffer mode
+                add_to_buffer(recieved_message); //comment this section for without-buffer mode
             }
         }
         if (FD_ISSET(receiver_receive_fd, &read_set))
@@ -66,6 +67,46 @@ void Router::run() {
             sockets[sender_send_fd]->send(recieved_message);
             cout<<"Transmitting message \""<< recieved_message <<"\" from receiver to sender..."<<endl<<LOG_DELIM;
         }
+        if(buffer_timeout()){//comment this section for without-buffer mode
+            pop_buffer();
+        }
     }
 
 }  
+
+void Router::pop_buffer(){
+    if(!buffer.empty()){
+        frame message = buffer.front();
+        sockets[receiver_send_fd]->send(message);
+        buffer.pop();
+
+        cout<<"Transmitting Message \""<< message <<"\" from buffer..."<<endl<<LOG_DELIM;
+    }
+}
+
+bool Router::buffer_timeout(){
+    if((clock()-last_send)/CLOCKS_PER_SEC>BUFFER_SEND_THRESHOLD){
+        last_send=clock();
+        cout<<"BUFFER-PROCESSING DONE"<<endl<<LOG_DELIM;
+        return true;
+    }
+    return false;
+}
+
+
+void Router::add_to_buffer(frame message) {
+    if(message[0]=='$'){
+        sockets[receiver_send_fd]->send(message);
+        cout<<"Transmitting message \""<< message <<"\" from sender to receiver..."<<endl<<LOG_DELIM;
+        return;
+    }
+    if (buffer.size() <= MAX_BUFFER_SIZE)
+    {
+        buffer.push(message);
+        cout << "Buffered Message \""<< message <<"\""<< endl << LOG_DELIM;
+        return;
+    }else{
+        cout<<"Oops the buffer is full -> dropped message: \""<< message <<"\""<<endl<<LOG_DELIM;
+    }
+    return;
+}
